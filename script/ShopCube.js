@@ -1,22 +1,45 @@
 // add to cart
 const cart = [];
 
-const returnCartIsi = function (card) {
+const returnCartIsi = function (name, price, img) {
   return `          
   <li class="order-product-list">
-  <div class="order-product-img"><img src="./imgShop/2x2/gan 251 m.jpg" alt="" /></div>
+  <div class="order-product-img"><img src="${img}" alt="" /></div>
   <div class="order-product-desc">
-    <h4>Gan 251 M</h4>
+    <h4>${name}</h4>
     <div class="size">
       <span>Size:</span>
       56mm
     </div>
-    <div class="price">$29.2</div>
+    <div class="price">${price}</div>
   </div>
   <div class="order-delete">
     <i class="fas fa-trash"></i>
   </div>
 </li>`;
+};
+
+if (cart.length == 0) {
+  const orderProduct = document.querySelector('.order-product');
+  orderProduct.innerHTML = '<span class="no-item">there\'s no item here</span>';
+}
+
+const deleteCart = function () {
+  const orderProduct = document.querySelector('.order-product');
+  orderProduct.addEventListener('click', function (e) {
+    console.log(e.target);
+    if (e.target.parentElement.classList.contains('fa-trash')) {
+      let cartItem = e.target.parentElement.parentElement;
+      cartItem = cartItem.parentElement;
+      const cubePrice = cartItem.querySelector('.price').innerHTML.split('$');
+      console.log(cubePrice);
+      const totalPrice = document.querySelector('.total-price');
+      let price = totalPrice.innerHTML.split('$');
+      const priceIsi = parseFloat(price[1]) - parseFloat(cubePrice[1]);
+      totalPrice.innerHTML = `$${(Math.round(priceIsi * 100) / 100).toFixed(2)}`;
+      cartItem.style.display = 'none';
+    }
+  });
 };
 
 const addToCart = function () {
@@ -25,15 +48,23 @@ const addToCart = function () {
     btn.addEventListener('click', function () {
       const card = this.parentElement.parentElement;
       cart.push(card);
+      const orderProduct = document.querySelector('.order-product');
+      const totalPrice = document.querySelector('.total-price');
+      let priceIsi = 0;
+      let cartIsi = '';
+      cart.forEach((value) => {
+        const cardImg = value.querySelector('.cube-card-img img').getAttribute('src');
+        const cardName = value.querySelector('.cube-card-desc h5').innerHTML;
+        const cardPrice = value.querySelector('.cube-price').innerHTML;
+        cartIsi += returnCartIsi(cardName, cardPrice, cardImg);
+        const price = cardPrice.split('$');
+        priceIsi += parseFloat(price[1]);
+      });
+      orderProduct.innerHTML = cartIsi;
+      totalPrice.innerHTML = `$${(Math.round(priceIsi * 100) / 100).toFixed(2)}`;
     });
   });
 };
-
-const orderProduct = document.querySelector('.order-product');
-
-cart.forEach((value) => {
-  let cartIsi = '';
-});
 
 // Cube Card
 const returnCard = (cube) => {
@@ -71,6 +102,8 @@ function changeType() {
         cubeCard += returnCard(cube);
       });
       shopCubeIsi.innerHTML = cubeCard;
+      addToCart();
+      deleteCart();
     });
 }
 
@@ -87,8 +120,8 @@ fetch('http://localhost:3000/' + cubeType.value)
     });
     shopCubeIsi.innerHTML = cubeCard;
     addToCart();
+    deleteCart();
   });
-
 // cart open and close
 const cartButton = document.querySelector('.shopping-cart');
 console.log(cartButton);
