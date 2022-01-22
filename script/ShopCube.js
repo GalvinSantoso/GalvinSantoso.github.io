@@ -94,7 +94,7 @@ const returnCard = (cube) => {
 
 function changeType() {
   let cubeType = document.getElementById('CubeType');
-  fetch('http://localhost:3000/' + cubeType.value)
+  fetch('../json-server/cube.json' + cubeType.value)
     .then((response) => response.json())
     .then((data) => {
       let cubeCard = '';
@@ -111,7 +111,7 @@ const shopCubeIsi = document.querySelector('.shop-cube-isi');
 
 let cubeType = document.getElementById('CubeType');
 
-fetch('http://localhost:3000/' + cubeType.value)
+fetch('../json-server/cube.json' + cubeType.value)
   .then((response) => response.json())
   .then((data) => {
     let cubeCard = '';

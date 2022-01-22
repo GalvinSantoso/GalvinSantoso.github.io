@@ -131,7 +131,7 @@ contactForm.addEventListener('submit', function (e) {
   if (errorMessage.length == 0) {
     const contactIsi = new Contact(id, name, email, phone, message);
     console.log(contactIsi);
-    fetch('http://localhost:3000/contact', {
+    fetch('../json-server/contact.json', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
